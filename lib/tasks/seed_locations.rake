@@ -8,7 +8,7 @@ namespace :db do
         # this requires PG gem 0.17+
         dbconn = ActiveRecord::Base.connection_pool.checkout
         raw_connection  = dbconn.raw_connection
-        copy_sql = 'copy locations(id, country_id, region_id, name, map_name, lat, lon) from STDIN with CSV'
+        copy_sql = 'copy locations(id, country_id, region_id, name, map_name, lat, lon, population, url_value) from STDIN with CSV'
         result = raw_connection.copy_data(copy_sql) do
           File.open(filename, 'r').each do |line|
             raw_connection.put_copy_data line
@@ -21,7 +21,7 @@ namespace :db do
       def download_csv_from_s3
         puts 'Downloading gzipped locations file from S3...'
         # replace with real locations.csv.gz url
-        gz_file = open('http://s3.amazonaws.com/locations.csv.gz')
+        gz_file = open('https://github.com/evrone/worldcities/blob/master/db/locations.csv.gz')
         puts 'Uncompressing locations file...'
         csv_file = Tempfile.new('fivesearch_locations')
         Zlib::GzipReader.open(gz_file.path) do |gz|
